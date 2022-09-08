@@ -39,7 +39,7 @@ public:
 	bool debug = false;
 	int debug_time = 100;
 	char *draw_buffer;
-	bool **return_buffer;
+	// bool **return_buffer;
 	//0123456789
 	char numbers_codec[10] = { 63,6,91,79,102,109,125,7,127,111 };
 
@@ -52,7 +52,7 @@ public:
 
 	//draws the written draw-buffer once
 	//returns 2D Array input-matrix [return-value][mux-position]
-	bool **draw();
+	void draw();
 	void write(char *input);
 
 };
