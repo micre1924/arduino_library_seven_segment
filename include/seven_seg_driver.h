@@ -1,9 +1,5 @@
 #include "Arduino.h"
 
-#if not defined(SEG_DISPLAY_LENGTH)
-	#define MAX_SEG_DISPLAY_LENGTH 20
-#endif
-
 namespace mrc{
 
 	class seven_seg_driver {
@@ -12,18 +8,18 @@ namespace mrc{
 		//if used Pin-Mode is already set
 		/**
 		 * @param seg_pins Segement Pins as an Int Array
-		 * @param display_pins Pins of every Digit on the Entirety of the Display as an Int Array
+		 * @param digit_pins Pins of every Digit on the Entirety of the Display as an Int Array
 		 * @param display_length Number of Digits on the Entirety of the Display as Int
 		 * @param seg_low true = low, false = high
 		 */
-		seven_seg_driver(const int *seg_pins, const int *display_pins, int display_length, bool seg_low, const int *return_pins = {}, int return_length = 0);
+		seven_seg_driver(uint8_t *seg_pins, uint8_t *digit_pins, int display_length, bool seg_low, uint8_t *return_pins = {}, int return_length = 0);
 		//Shift-Register-Mode
 		//if used Pin-Mode is already set
-		seven_seg_driver(int shift_pin, int latch_pin, int serial_pin, const int *return_pins, int display_length, int return_length, bool segs_on_end, bool seg_low);
+		seven_seg_driver(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t *return_pins, int display_length, int return_length, bool segs_on_end, bool seg_low);
 		
-		const int *seg_pins, *display_pins, *return_pins;
+		uint8_t *seg_pins, *display_pins, *return_pins;
 		int shift_pin, latch_pin, serial_pin, display_length, return_length;
-		bool segs_on_end, seg_low, is_shift_reg;
+		bool segs_on_end, seg_low, is_shift_reg = false;
 		bool debug = false;
 		int debug_time = 100;
 		char *draw_buffer;
@@ -41,7 +37,7 @@ namespace mrc{
 		//draws the written draw-buffer once
 		//returns 2D Array input-matrix [return-value][mux-position]
 		void draw();
-		void write(char *input);
+		void write(char* input);
 
 	};
 }

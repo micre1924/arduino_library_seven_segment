@@ -1,9 +1,9 @@
+#include "Arduino.h"
 #include "seven_seg_driver.h"
-#include "avr/io.h"
 
 namespace mrc{
 
-	seven_seg_driver::seven_seg_driver(const int *seg_pins, const int *display_pins, int display_length, bool seg_low, const int *return_pins, int return_length)
+	seven_seg_driver::seven_seg_driver(uint8_t *seg_pins, uint8_t *digit_pins, int display_length, bool seg_low, uint8_t *return_pins, int return_length)
 	{
 		draw_buffer = new char[display_length + 1];
 
@@ -13,7 +13,7 @@ namespace mrc{
 		// }
 		
 		for (int d = 0; d < display_length; d++) {
-			pinMode(display_pins[d], OUTPUT);
+			pinMode(digit_pins[d], OUTPUT);
 		}
 		for (int s = 0; s < 8; s++) {
 			pinMode(seg_pins[s], OUTPUT);
@@ -28,8 +28,9 @@ namespace mrc{
 		seven_seg_driver::display_length = display_length;
 		seven_seg_driver::return_length = return_length;
 		seven_seg_driver::seg_low = seg_low;
+		seven_seg_driver::is_shift_reg = false;
 	}
-	seven_seg_driver::seven_seg_driver(int shift_pin, int latch_pin, int serial_pin, const int *return_pins,int display_length,int return_length, bool segs_on_end, bool seg_low) 
+	seven_seg_driver::seven_seg_driver(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t *return_pins, int display_length, int return_length, bool segs_on_end, bool seg_low) 
 	{
 		draw_buffer = new char[display_length];
 
@@ -96,7 +97,7 @@ namespace mrc{
 	}
 
 	//drawables: .0123456789ABCDEFGHIJLNOPQRSUXY
-	void seven_seg_driver::write(char *input) {
+	void seven_seg_driver::write(char* input) {
 		for (int c = 0, d = 0; d <= (display_length + 1); c++, d++) {
 			draw_buffer[d] = 0;
 			switch (input[c])
@@ -118,4 +119,8 @@ namespace mrc{
 			}		//ascii Dot, Comma
 		}
 	}
+
+	// void seven_seg_driver::write(String input) {
+	// 	seven_seg_driver::write(sprintf())
+	// }
 }
