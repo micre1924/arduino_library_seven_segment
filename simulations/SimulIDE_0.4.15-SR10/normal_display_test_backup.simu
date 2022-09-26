@@ -1,4 +1,8 @@
-<circuit noLinAcc="5" Speed_per="0.1" reactStep="50" Speed_sps="1000" Simu_Step_nS="1000" animate="1" type="simulide_0.4">
+<circuit noLinAcc="5" Speed_per="100" reactStep="50" Speed_sps="1000000" Simu_Step_nS="1000" animate="1" type="simulide_0.4">
+
+Unique  Id: Voltage Source-732: 
+Circuit Id: Voltage Source-732
+<item circRot="0" itemtype="Voltage Source" vflip="1" Unit=" V" labelrot="0" hflip="1" y="-412" mainComp="false" objectName="Voltage Source-732" valLabelx="-26" circPos="0,0" valLabRot="0" labelx="-40" x="-380" boardPos="-1e+06,-1e+06" boardRot="-1e+06" rotation="0" Voltage="5" Show_Volt="true" labely="-80" valLabely="10" id="Voltage Source-732" Show_id="false"/>
 
 Unique  Id: Tunnel-718: 
 Circuit Id: DIGIT 8
@@ -351,5 +355,9 @@ Circuit Id: Connector-729
 Unique  Id: Connector-730: 
 Circuit Id: Connector-730
 <item enodeid="enode-730" circRot="0" itemtype="Connector" vflip="1" labelrot="0" hflip="1" y="-532" mainComp="false" objectName="Connector-730" valLabelx="0" pointList="-336,-532,-384,-532" circPos="0,0" valLabRot="0" labelx="-16" x="-336" boardPos="-1e+06,-1e+06" boardRot="-1e+06" rotation="0" labely="-24" valLabely="0" startpinid="Tunnel-718-pin" id="Connector-730" Show_id="false" endpinid="Arduino Nano-1-PB5"/>
+
+Unique  Id: Connector-733: 
+Circuit Id: Connector-733
+<item enodeid="enode-733" circRot="0" itemtype="Connector" vflip="1" labelrot="0" hflip="1" y="-412" mainComp="false" objectName="Connector-733" valLabelx="0" pointList="-364,-412,-280,-412,-280,-604,-384,-604" circPos="0,0" valLabRot="0" labelx="-16" x="-364" boardPos="-1e+06,-1e+06" boardRot="-1e+06" rotation="0" labely="-24" valLabely="0" startpinid="Voltage Source-732-outPin" id="Connector-733" Show_id="false" endpinid="Arduino Nano-1-PC6"/>
  
 </circuit>
