@@ -3,7 +3,7 @@
 
 namespace mrc{
 
-	seven_seg_driver::seven_seg_driver(uint8_t *seg_pins, uint8_t *digit_pins, uint8_t digit_amount, bool seg_low, uint8_t *return_pins, int return_length)
+	seven_seg_driver::seven_seg_driver(uint8_t *seg_pins, uint8_t *digit_pins, uint8_t digit_amount, bool seg_low, int digit_sustain_time, uint8_t *return_pins, uint8_t return_length)
 	{
 		seven_seg_driver::return_pins = return_pins;
 		seven_seg_driver::seg_pins = seg_pins;
@@ -15,23 +15,23 @@ namespace mrc{
 
 		seven_seg_driver::draw_buffer = new uint8_t[seven_seg_driver::digit_amount + 1];
 
-		// return_buffer = new bool*[return_length];
-		// for (int a = 0; a < return_length; a++) {
-		// 	return_buffer[a] = new bool[display_length];
-		// }
+		seven_seg_driver::return_buffer = new bool*[seven_seg_driver::return_length];
+		for (uint8_t a = 0; a < seven_seg_driver::return_length; a++) {
+			seven_seg_driver::return_buffer[a] = new bool[seven_seg_driver::digit_amount];
+		}
 		
-		for (int d = 0; d < seven_seg_driver::digit_amount; d++) {
+		for (uint8_t d = 0; d < seven_seg_driver::digit_amount; d++) {
 			pinMode(seven_seg_driver::digit_pins[d], OUTPUT);
 		}
-		for (int s = 0; s < 8; s++) {
+		for (uint8_t s = 0; s < 8; s++) {
 			pinMode(seven_seg_driver::seg_pins[s], OUTPUT);
 		}
-		// for (int r = 0; r < return_length; r++) {
-		// 	pinMode(return_pins[r], INPUT);
-		// }
+		for (uint8_t r = 0; r < return_length; r++) {
+			pinMode(return_pins[r], INPUT);
+		}
 
 	}
-	seven_seg_driver::seven_seg_driver(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t *return_pins, uint8_t digit_amount, int return_length, bool segs_on_end, bool seg_low) 
+	seven_seg_driver::seven_seg_driver(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t digit_amount, bool seg_low, bool segs_on_end, uint8_t *return_pins, uint8_t return_length) 
 	{
 		seven_seg_driver::return_pins = return_pins;
 		seven_seg_driver::shift_pin = shift_pin;
@@ -45,33 +45,37 @@ namespace mrc{
 
 		seven_seg_driver::draw_buffer = new uint8_t[seven_seg_driver::digit_amount + 1];
 
-		// return_buffer = new bool*[return_length];
-		// for (int a = 0; a < return_length; a++) {
-		// 	return_buffer[a] = new bool[display_length];
-		// }
+		seven_seg_driver::return_buffer = new bool*[seven_seg_driver::return_length];
+		for (uint8_t a = 0; a < seven_seg_driver::return_length; a++) {
+			seven_seg_driver::return_buffer[a] = new bool[seven_seg_driver::digit_amount];
+		}
 
 		pinMode(seven_seg_driver::serial_pin, OUTPUT);
 		pinMode(seven_seg_driver::latch_pin, OUTPUT);
 		pinMode(seven_seg_driver::shift_pin, OUTPUT);
-		// for (int r = 0; r < return_length; r++) {
-		// 	pinMode(return_pins[r], INPUT);
-		// }
+		
+		for (uint8_t r = 0; r < return_length; r++) {
+			pinMode(return_pins[r], INPUT);
+		}
 	}
 
 	void seven_seg_driver::draw() {
-		for (int d = 0; d < seven_seg_driver::digit_amount; d++) {
-			int d_inv = (seven_seg_driver::digit_amount - 1) - d;
+		uint8_t last_d_inv = 0U;
+		for (uint8_t d = 0; d < seven_seg_driver::digit_amount; d++) {
+			uint8_t d_inv = (seven_seg_driver::digit_amount - 1) - d;
 			if (seven_seg_driver::is_shift_reg) {
 				long position = 1 << d;
-				for (int i = seven_seg_driver::digit_amount - 1; i >= 0; i--) {
-					digitalWrite(serial_pin, ((position >> i) % 2) == seven_seg_driver::seg_low);
-					digitalWrite(shift_pin, HIGH);
-					digitalWrite(shift_pin, LOW);
+				for (uint8_t i = seven_seg_driver::digit_amount - 1; i >= 0; i--) {
+					digitalWrite(seven_seg_driver::serial_pin, ((position >> i) % 2) == seven_seg_driver::seg_low);
+					digitalWrite(seven_seg_driver::shift_pin, HIGH);
+					digitalWrite(seven_seg_driver::shift_pin, LOW);
 				}
 			}
-			else digitalWrite(seven_seg_driver::digit_pins[d_inv], !seven_seg_driver::seg_low);
+			else {
+				digitalWrite(seven_seg_driver::digit_pins[last_d_inv], !seven_seg_driver::seg_low);
+			}
 
-			for (int s = 7; s >= 0; s--) {
+			for (int8_t s = 7; s >= 0; s--) {
 				bool set_bit = (seven_seg_driver::draw_buffer[d] >> s) % 2;
 				if (seven_seg_driver::is_shift_reg) {
 					digitalWrite(seven_seg_driver::serial_pin, set_bit == !seven_seg_driver::seg_low);
@@ -86,20 +90,19 @@ namespace mrc{
 			}
 			else {
 				digitalWrite(seven_seg_driver::digit_pins[d_inv], seven_seg_driver::seg_low);
-				delayMicroseconds(true << dim_value);
-				digitalWrite(seven_seg_driver::digit_pins[d_inv], !seven_seg_driver::seg_low);
+				delayMicroseconds(100);
+				last_d_inv = d_inv;
 			}
-			
-			// for (int r = 0; r < return_length; r++) {
-			// 	return_buffer[r][d] = digitalRead(return_pins[r]) == seg_low;
-			// }
+			for (uint8_t r = 0; r < seven_seg_driver::return_length; r++) {
+				seven_seg_driver::return_buffer[r][d] = digitalRead(seven_seg_driver::return_pins[r]) == seven_seg_driver::seg_low;
+			}
 		}
-		// return return_buffer;
+		if(!is_shift_reg) digitalWrite(seven_seg_driver::digit_pins[last_d_inv], !seven_seg_driver::seg_low);
 	}
 
 	//drawables: .0123456789ABCDEFGHIJLNOPQRSUXY
 	void seven_seg_driver::write(char* input) {
-		for (int c = 0, d = 0; d <= (seven_seg_driver::digit_amount + 1); c++, d++) {
+		for (uint16_t c = 0, d = 0; d <= (seven_seg_driver::digit_amount + 1); c++, d++) {
 			seven_seg_driver::draw_buffer[d] = 0;
 			switch (input[c])
 			{
