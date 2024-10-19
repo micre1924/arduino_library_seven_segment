@@ -2,7 +2,7 @@
 
 namespace mrc{
 
-	class seven_seg_driver {
+	class seven_segment {
 	public:
 		//Native-Arduino-Pin-Mode
 		//if used, Pin-Mode is already set
@@ -13,10 +13,10 @@ namespace mrc{
 		 * @param seg_low true = low, false = high
 		 * @param digit_sustain_time time that a digit is sustained in microseconds
 		 */
-		seven_seg_driver(uint8_t *seg_pins, uint8_t *digit_pins, uint8_t digit_amount, bool seg_low, int digit_sustain_time = 100, uint8_t *return_pins = {}, uint8_t return_length = 0);
+		seven_segment(uint8_t *seg_pins, uint8_t *digit_pins, uint8_t digit_amount, bool seg_low, int digit_sustain_time = 100, uint8_t *return_pins = {}, uint8_t return_length = 0);
 		//Shift-Register-Mode
 		//if used, Pin-Mode is already set
-		seven_seg_driver(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t digit_amount, bool seg_low, bool segs_on_end, uint8_t *return_pins = {}, uint8_t return_length = 0);
+		seven_segment(uint8_t shift_pin, uint8_t latch_pin, uint8_t serial_pin, uint8_t digit_amount, bool seg_low, bool segs_on_end, uint8_t *return_pins = {}, uint8_t return_length = 0);
 		//pointers
 		bool 	**return_buffer;
 		bool	seg_low,
