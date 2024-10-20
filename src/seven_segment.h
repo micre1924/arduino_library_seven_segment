@@ -55,6 +55,7 @@ namespace mrc{
 				// Pins for receiving parrallel data from additional Key Matrix
 				const int8_t 	*return_pins;
 				// Buffer for returned data from additional Key Matrix
+				// structure: [matrixReturn][matrixInputMux]
 				bool 			**return_buffer;
 				// Length of parrallel retured Keymatrix Data in Bits
 				uint8_t			return_length;
